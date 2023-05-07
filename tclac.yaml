@@ -1,0 +1,53 @@
+esphome:
+  name: tclac
+  friendly_name: TCL AC
+  platform: ESP8266
+  board: d1_mini
+  includes:
+    - TCL.h
+
+# Set statul led for Wemos D1 mini
+status_led:
+  pin: GPIO2
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  use_address: 192.168.1.63
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "TCL_wifi"
+    password: "TCL_wifi"
+
+captive_portal:
+
+# Enable web server (can be disabled)
+web_server:
+  port: 80
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: "Asia/ Yekaterinburg"
+
+# Enable logging
+logger:
+  level: ERROR
+  baud_rate: 0 #Important. You can't use serial port
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+climate:
+  - platform: custom
+    lambda: |-
+      auto tclac = new TCL();
+      App.register_component(tclac);
+      return {tclac};
+    climates:
+      - name: "TCL"    
